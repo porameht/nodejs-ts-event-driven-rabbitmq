@@ -16,55 +16,75 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const typeorm_1 = require("typeorm");
 const product_1 = require("./entity/product");
-(0, typeorm_1.createConnection)()
-    .then((db) => {
+const callback_api_1 = __importDefault(require("amqplib/callback_api"));
+(0, typeorm_1.createConnection)().then((db) => {
     const productRepository = db.getRepository(product_1.Product);
-    const app = (0, express_1.default)();
-    app.use((0, cors_1.default)({
-        origin: [
-            "http://localhost:3000",
-            "http://localhost:8080",
-            "http://localhost:4200",
-        ],
-    }));
-    app.use(express_1.default.json());
-    app.get("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const products = yield productRepository.find();
-        return res.json(products);
-    }));
-    app.post("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const product = yield productRepository.create(req.body);
-        const result = yield productRepository.save(product);
-        return res.send(result);
-    }));
-    app.get("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const product = yield productRepository.findOne({
-            where: { id: parseInt(req.params.id) },
+    callback_api_1.default.connect("amqps://jmcnzwfu:xu8o1WzZO03KO5H-NYJSObPyoubVmF2w@armadillo.rmq.cloudamqp.com/jmcnzwfu", (error0, conection) => {
+        if (error0) {
+            throw error0;
+        }
+        conection.createChannel((error1, channel) => {
+            if (error1) {
+                throw error1;
+            }
+            const app = (0, express_1.default)();
+            app.use((0, cors_1.default)({
+                origin: [
+                    "http://localhost:3000",
+                    "http://localhost:8080",
+                    "http://localhost:4200",
+                ],
+            }));
+            app.use(express_1.default.json());
+            app.get("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const products = yield productRepository.find();
+                // channel.sendToQueue("hello", Buffer.from("hello"));
+                return res.json(products);
+            }));
+            app.post("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const product = yield productRepository.create(req.body);
+                const result = yield productRepository.save(product);
+                // rabbitmq
+                channel.sendToQueue("product_created", Buffer.from(JSON.stringify(result)));
+                return res.send(result);
+            }));
+            app.get("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const product = yield productRepository.findOne({
+                    where: { id: parseInt(req.params.id) },
+                });
+                return res.send(product);
+            }));
+            app.put("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const product = yield productRepository.findOne({
+                    where: { id: parseInt(req.params.id) },
+                });
+                productRepository.merge(product, req.body);
+                const result = yield productRepository.save(product);
+                // rabbitmq
+                channel.sendToQueue("product_updated", Buffer.from(JSON.stringify(result)));
+                return res.send(result);
+            }));
+            app.delete("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const result = yield productRepository.delete(req.params.id);
+                // rabbitmq
+                channel.sendToQueue("product_deleted", Buffer.from(req.params.id));
+                return res.send(result + " delete already");
+            }));
+            app.post("/api/products/:id/like", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const product = yield productRepository.findOne({
+                    where: { id: parseInt(req.params.id) },
+                });
+                product.likes++;
+                const result = yield productRepository.save(product);
+                return res.send(result);
+            }));
+            app.listen(8000, () => {
+                console.log("server admin is running...");
+            });
+            process.on("beforeExit", () => {
+                console.log("closing");
+                conection.close();
+            });
         });
-        return res.send(product);
-    }));
-    app.put("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const product = yield productRepository.findOne({
-            where: { id: parseInt(req.params.id) },
-        });
-        productRepository.merge(product, req.body);
-        const result = yield productRepository.save(product);
-        return res.send(result);
-    }));
-    app.delete("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const result = yield productRepository.delete(req.params.id);
-        return res.send(result + " delete already");
-    }));
-    app.post("/api/products/:id/like", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const product = yield productRepository.findOne({
-            where: { id: parseInt(req.params.id) },
-        });
-        product.likes++;
-        const result = yield productRepository.save(product);
-        return res.send(result);
-    }));
-    app.listen(8000, () => {
-        console.log("server is running...");
     });
-})
-    .catch();
+});

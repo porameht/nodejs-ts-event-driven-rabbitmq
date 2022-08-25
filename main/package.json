@@ -1,7 +1,7 @@
 {
-  "name": "admin",
+  "name": "main",
   "version": "1.0.0",
-  "description": "",
+  "description": "1. initial project `npm init -y` 2. install dependecies `npm install express cors` 3. install dev dependecies `npm install @types/express @types/cors @types/node nodemon typescript -D` 4. initial typescript `tsc --init` enable this below because we will ues type ORM",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "-": "0.0.1",
     "amqplib": "^0.10.2",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "mysql": "^2.18.1",
+    "mongodb": "^4.9.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.7"
   },

@@ -22,3 +22,7 @@
 11. create file `ormconfig.json` inside root directory
 12. create database name of database will same with `ormconfig.json`
 13. use method `createConnection` inside file `app.ts`
+
+14. install rabbitmq `npm i amqplib` and `npm install -D @types/amqplib`
+15. import amqplib inside file `app.ts` then copy url `amqps://<...>@armadillo.rmq.cloudamqp.com/` from `https://cloudamqp.com/`
+16. using parameter channel `channel.sendToQueue("hello", Buffer.from("hello"));`
