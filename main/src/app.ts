@@ -1,8 +1,9 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { Any, createConnection } from "typeorm";
 import amqp from "amqplib/callback_api";
 import { Product } from "./entity/product";
+import axios from "axios";
 
 createConnection().then((db) => {
   const productRepository = db.getMongoRepository(Product);
@@ -74,6 +75,27 @@ createConnection().then((db) => {
           await productRepository.deleteOne({ admin_id });
           console.log("product deleted");
         });
+
+        app.get("/api/products", async (req: Request, res: Response) => {
+          const products = await productRepository.find();
+          return res.send(products);
+        });
+
+        app.post(
+          "/api/products/:id/like",
+          async (req: Request, res: Response) => {
+            const product: any = await productRepository.findOneBy(
+              req.params.id
+            );
+            await axios.post(
+              `http://localhost:8000/api/products/${product.admin_id}/like`,
+              {}
+            );
+            product.likes++;
+            const result = await productRepository.save(product);
+            return res.send(result);
+          }
+        );
 
         app.listen(8001, () => {
           console.log("server main is running...");

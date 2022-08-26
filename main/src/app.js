@@ -17,6 +17,7 @@ const cors_1 = __importDefault(require("cors"));
 const typeorm_1 = require("typeorm");
 const callback_api_1 = __importDefault(require("amqplib/callback_api"));
 const product_1 = require("./entity/product");
+const axios_1 = __importDefault(require("axios"));
 (0, typeorm_1.createConnection)().then((db) => {
     const productRepository = db.getMongoRepository(product_1.Product);
     callback_api_1.default.connect("amqps://jmcnzwfu:xu8o1WzZO03KO5H-NYJSObPyoubVmF2w@armadillo.rmq.cloudamqp.com/jmcnzwfu", (error0, conection) => {
@@ -67,6 +68,17 @@ const product_1 = require("./entity/product");
                 //   console.log(admin_id);
                 yield productRepository.deleteOne({ admin_id });
                 console.log("product deleted");
+            }));
+            app.get("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const products = yield productRepository.find();
+                return res.send(products);
+            }));
+            app.post("/api/products/:id/like", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+                const product = yield productRepository.findOneBy(req.params.id);
+                yield axios_1.default.post(`http://localhost:8000/api/products/${product.admin_id}/like`, {});
+                product.likes++;
+                const result = yield productRepository.save(product);
+                return res.send(result);
             }));
             app.listen(8001, () => {
                 console.log("server main is running...");

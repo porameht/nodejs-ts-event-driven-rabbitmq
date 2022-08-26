@@ -35,10 +35,7 @@ createConnection().then((db) => {
 
         app.get("/api/products", async (req: Request, res: Response) => {
           const products = await productRepository.find();
-
-          // channel.sendToQueue("hello", Buffer.from("hello"));
-
-          return res.json(products);
+          return res.send(products);
         });
 
         app.post("/api/products", async (req: Request, res: Response) => {
@@ -62,8 +59,8 @@ createConnection().then((db) => {
         });
 
         app.put("/api/products/:id", async (req: Request, res: Response) => {
-          const product: any = await productRepository.findOne({
-            where: { id: parseInt(req.params.id) },
+          const product: any = await productRepository.findOneBy({
+            id: parseInt(req.params.id),
           });
           productRepository.merge(product, req.body);
           const result = await productRepository.save(product);
@@ -87,8 +84,8 @@ createConnection().then((db) => {
         app.post(
           "/api/products/:id/like",
           async (req: Request, res: Response) => {
-            const product: any = await productRepository.findOne({
-              where: { id: parseInt(req.params.id) },
+            const product: any = await productRepository.findOneBy({
+              id: parseInt(req.params.id),
             });
 
             product.likes++;

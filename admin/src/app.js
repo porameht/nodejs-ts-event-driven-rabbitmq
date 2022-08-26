@@ -38,8 +38,7 @@ const callback_api_1 = __importDefault(require("amqplib/callback_api"));
             app.use(express_1.default.json());
             app.get("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 const products = yield productRepository.find();
-                // channel.sendToQueue("hello", Buffer.from("hello"));
-                return res.json(products);
+                return res.send(products);
             }));
             app.post("/api/products", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 const product = yield productRepository.create(req.body);
@@ -55,8 +54,8 @@ const callback_api_1 = __importDefault(require("amqplib/callback_api"));
                 return res.send(product);
             }));
             app.put("/api/products/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-                const product = yield productRepository.findOne({
-                    where: { id: parseInt(req.params.id) },
+                const product = yield productRepository.findOneBy({
+                    id: parseInt(req.params.id),
                 });
                 productRepository.merge(product, req.body);
                 const result = yield productRepository.save(product);
@@ -71,8 +70,8 @@ const callback_api_1 = __importDefault(require("amqplib/callback_api"));
                 return res.send(result + " delete already");
             }));
             app.post("/api/products/:id/like", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-                const product = yield productRepository.findOne({
-                    where: { id: parseInt(req.params.id) },
+                const product = yield productRepository.findOneBy({
+                    id: parseInt(req.params.id),
                 });
                 product.likes++;
                 const result = yield productRepository.save(product);

@@ -10,3 +10,4 @@
 7. install rabbitmq `npm i amqplib` and `npm install -D @types/amqplib`
 8. import amqplib inside file `app.ts` then copy url `amqps://<...>@armadillo.rmq.cloudamqp.com/` from `https://cloudamqp.com/`
 9. using parameter channel `channel.assertQueue("hello", { durable: false });` and `channel.consume("hello", (msg) => { console.log(msg?.content.toString()); });`
+10. install axios `npm install axios`
