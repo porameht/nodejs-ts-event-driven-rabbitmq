@@ -9,6 +9,8 @@
 7. add `HttpClientModule` in file `app.module`
 8. create interface by `ng generate interface <name interface>`
 9. create service by `ng generate service <name service>`
+10. create component by `ng generate component admin/product-create`
+11. import form module `FormsModule` in file `admin.module.ts`
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
 

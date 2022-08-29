@@ -14,6 +14,10 @@ export class ProductService {
     return this.http.get<Product[]>(this.endpoint);
   }
 
+  create(data: any): Observable<Product> {
+    return this.http.post<Product>(this.endpoint, data);
+  }
+
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.endpoint}/${id}`);
   }
