@@ -10,7 +10,10 @@
 8. create interface by `ng generate interface <name interface>`
 9. create service by `ng generate service <name service>`
 10. create component by `ng generate component admin/product-create`
-11. import form module `FormsModule` in file `admin.module.ts`
+11. import form module `FormsModule` in file `admin.module.ts` inside `imports:[]`
+12. create component by `ng generate component admin/product-edit`
+13. import reactive forms module `ReactiveFormsModule` in file `admin.module.ts` inside `imports:[]`
+14. create service by `ng generate service services/main`
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
 

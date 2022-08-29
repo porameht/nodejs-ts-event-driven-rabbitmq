@@ -10,6 +10,8 @@ import { ProductService } from 'src/app/services/product.service';
 export class ProductCreateComponent implements OnInit {
   title = '';
   image = '';
+
+  
   constructor(private productService: ProductService, private router: Router) {}
 
   ngOnInit(): void {}

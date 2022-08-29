@@ -6,7 +6,8 @@ import { AdminComponent } from './admin.component';
 import { ProductsComponent } from './products/products.component';
 import { RouterModule } from '@angular/router';
 import { ProductCreateComponent } from './product-create/product-create.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProductEditComponent } from './product-edit/product-edit.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { FormsModule } from '@angular/forms';
     AdminComponent,
     ProductsComponent,
     ProductCreateComponent,
+    ProductEditComponent,
   ],
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
 })
 export class AdminModule {}
