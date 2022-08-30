@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Product } from '../interfaces/product';
 import { MainService } from '../services/main.service';
 
 @Component({
@@ -12,5 +13,16 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     this.mainService.all().subscribe((products) => (this.products = products));
+  }
+
+  like(id: number): void {
+    this.mainService.like(id).subscribe(() => {
+      this.products = this.products.map((p: Product) => {
+        if (p.id === id) {
+          p.likes++;
+        }
+        return p;
+      });
+    });
   }
 }
